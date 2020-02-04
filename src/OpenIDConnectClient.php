@@ -221,7 +221,7 @@ class OpenIDConnectClient
 
     private $enc_type = PHP_QUERY_RFC1738;
 
-    /** @var CacheInterface $cache */
+    /** @var CacheInterface|null $cache */
     private $cache;
 
     /**
@@ -1079,11 +1079,13 @@ class OpenIDConnectClient
             if($this->cache !== null) {
                 $key = md5($url);
 
-                if (!$this->cache->has($key)) {
-                    $this->cache->set($key, $this->fetchURL($url), $ttl);
-                }
+                $contents = $this->cache->get($key);
 
-                return $this->cache->get($key);
+                if (is_null($contents)) {
+                    $contents = $this->fetchURL($url);
+
+                    $this->cache->set($key, $contents, $ttl);
+                }
             }
         } catch (\Psr\SimpleCache\InvalidArgumentException $ex){
 
