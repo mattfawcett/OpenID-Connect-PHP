@@ -1086,6 +1086,8 @@ class OpenIDConnectClient
 
                     $this->cache->set($key, $contents, $ttl);
                 }
+
+                return $contents;
             }
         } catch (\Psr\SimpleCache\InvalidArgumentException $ex){
 
